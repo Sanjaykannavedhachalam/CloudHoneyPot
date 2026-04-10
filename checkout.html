@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | ShopSecure</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .checkout-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 40px; }
+        .order-summary { background: rgba(0,0,0,0.3); border-radius: 16px; padding: 30px; }
+        .summary-item { display: flex; justify-content: space-between; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--border); }
+        .summary-total { display: flex; justify-content: space-between; font-size: 1.4rem; font-family: 'Space Grotesk'; font-weight: 700; margin-top: 20px; color: var(--accent); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo"><i data-lucide="hexagon"></i> ShopSecure</a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="products.html">Products</a>
+            <a href="contact.html">Support</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1 class="page-title">Secure Checkout</h1>
+        
+        <div class="checkout-grid">
+            <div class="form-card">
+                <h2 style="margin-bottom: 25px;"><i data-lucide="map-pin" style="display:inline; vertical-align:middle; color:var(--accent); margin-right:10px;"></i>Shipping Details</h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="form-group"><label>First Name</label><input type="text" id="hp-fname" placeholder="John" required></div>
+                    <div class="form-group"><label>Last Name</label><input type="text" id="hp-lname" placeholder="Doe" required></div>
+                </div>
+                <div class="form-group"><label>Street Address</label><input type="text" id="hp-addr" placeholder="123 Secured Way" required></div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="form-group"><label>City</label><input type="text" id="hp-city" placeholder="Metropolis" required></div>
+                    <div class="form-group"><label>Zip Code</label><input type="text" id="hp-zip" placeholder="10001" required></div>
+                </div>
+
+                <h2 style="margin: 40px 0 25px;"><i data-lucide="credit-card" style="display:inline; vertical-align:middle; color:var(--accent); margin-right:10px;"></i>Payment Information</h2>
+                <div class="form-group">
+                    <label>Cardholder Name</label>
+                    <input type="text" id="hp-cname" placeholder="JOHN DOE" required>
+                </div>
+                <div class="form-group">
+                    <label>Card Number</label>
+                    <input type="text" id="hp-cnum" placeholder="0000 0000 0000 0000" maxlength="19" required>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="form-group"><label>Expiry (MM/YY)</label><input type="text" id="hp-cexp" placeholder="12/25" required></div>
+                    <div class="form-group"><label>CVC</label><input type="password" id="hp-cvc" placeholder="***" maxlength="3" required></div>
+                </div>
+
+                <button class="btn-primary" style="width:100%; margin-top:20px; font-size:1.1rem; padding:16px;" onclick="hpCompletePurchase()">Complete Purchase</button>
+            </div>
+
+            <div class="order-summary">
+                <h3 style="margin-bottom: 20px;">Order Summary</h3>
+                <div class="summary-item">
+                    <div>
+                        <div style="font-weight:600;">Onyx Pro Studio X</div>
+                        <div style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;">Qty: 1</div>
+                    </div>
+                    <div>$2,499.00</div>
+                </div>
+                <div class="summary-item">
+                    <div>
+                        <div style="font-weight:600;">Aether Void Cancelling</div>
+                        <div style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;">Qty: 1</div>
+                    </div>
+                    <div>$450.00</div>
+                </div>
+                <div class="summary-item" style="border:none;">
+                    <div>Shipping</div>
+                    <div style="color:var(--accent);">Free Priority</div>
+                </div>
+                <div class="summary-total">
+                    <span>Total</span>
+                    <span>$2,949.00</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="waf-sim-badge honeypot"><div class="pulse"></div> Honeypot Environment (Attacker View)</div>
+
+    <!-- HONEYPOT TELEMETRY -->
+    <script>
+        lucide.createIcons();
+        const LOG_ENDPOINT = "https://YOUR_API_GATEWAY_URL/log";
+
+        function logAttackerAction(actionType, category, detail, payload = null) {
+            if(LOG_ENDPOINT.includes("YOUR_")) { console.log("HONEYPOT_LOG:", {actionType, category, payload}); return; }
+
+            fetch(LOG_ENDPOINT, {
+                method: "POST", headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    action: actionType, category: category, detail: detail, payload: payload,
+                    timestamp: new Date().toISOString(), userAgent: navigator.userAgent,
+                    url: window.location.href,
+                    sessionId: sessionStorage.getItem('attacker_sid') || (sessionStorage.setItem('attacker_sid', Math.random().toString(36).substr(2, 9)), sessionStorage.getItem('attacker_sid'))
+                })
+            }).catch(() => {});
+        }
+
+        logAttackerAction("SESSION_PAGE_VIEW", "Navigation", "Visited High-Value target: Checkout");
+
+        function hpCompletePurchase() {
+            // Skimming the attackers form payloads
+            const payloadData = {
+                target: "checkout_form",
+                billingName: document.getElementById('hp-fname').value + ' ' + document.getElementById('hp-lname').value,
+                billingAddress: document.getElementById('hp-addr').value + ' ' + document.getElementById('hp-city').value + ' ' + document.getElementById('hp-zip').value,
+                cardName: document.getElementById('hp-cname').value,
+                cardNumber_ATTEMPT: document.getElementById('hp-cnum').value,
+                cardExp: document.getElementById('hp-cexp').value,
+                cardCvc: document.getElementById('hp-cvc').value
+            };
+            
+            logAttackerAction("FORM_INJECTION", "Data Skim Attempt", "Attacker submitted the checkout form", payloadData);
+            
+            alert('PCI DSS Error 0x88F: Authentication token expired for payment gateway. Transaction halted.');
+        }
+
+        // Catch sneaky inputs as they happen
+        document.querySelectorAll('input').forEach(el => {
+            el.addEventListener('change', (e) => {
+                if(e.target.value.includes('<') || e.target.value.includes("'") || e.target.value.includes('=')) {
+                    logAttackerAction("PAYLOAD_TEST", "Injection Attempt", "Attacker typing payload into checkout fields", { fieldId: e.target.id, val: e.target.value });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
